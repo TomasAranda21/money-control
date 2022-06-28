@@ -1,4 +1,5 @@
 import Users from "../models/usersModel.js"
+import errors from "../helpers/errors.js"
 
 
 const registerUsers = async ( req, res) => {
@@ -9,9 +10,8 @@ const registerUsers = async ( req, res) => {
 
     if(users){
 
-        const error = new Error("the email already exists")
-
-        return res.status(400).json({msg: error.message})
+        return errors(res, "the email already exists")
+        
     }
 
     try {
