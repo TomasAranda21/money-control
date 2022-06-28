@@ -1,5 +1,6 @@
 import Users from "../models/usersModel.js"
 import errors from "../helpers/errors.js"
+import createJWT from "../helpers/createJWT.js"
 
 
 const registerUsers = async ( req, res) => {
@@ -10,8 +11,8 @@ const registerUsers = async ( req, res) => {
 
     if(users){
 
-        return errors(res, "the email already exists")
-        
+        return errors(res, 400, "the email already exists")
+
     }
 
     try {
@@ -25,8 +26,36 @@ const registerUsers = async ( req, res) => {
 
     } catch (error) {
      
-        
         console.log(error)
+    }
+}
+
+
+
+const loginUser = async(req, res) => {
+
+    const { email, password } = req.body
+
+    const user = await Users.findOne({ email})
+
+    if(!user){
+
+        return errors(res, 400, "the email dont exist")
+    }
+
+    if(await user.checkPassword(password)){
+
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            token: createJWT(user._id)
+        })
+    }
+
+    else{
+
+        return errors(res, 403, "the password or username is incorrect")
 
     }
 
@@ -38,6 +67,7 @@ const registerUsers = async ( req, res) => {
 
 export {
     registerUsers,
+    loginUser
 
 
 }
