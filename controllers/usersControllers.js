@@ -63,7 +63,7 @@ const loginUser = async(req, res) => {
 
 
 
-const profileUser = (req, res) => {
+const getProfileUser = (req, res) => {
 
     const { usersBudget } = req
 
@@ -76,7 +76,7 @@ const profileUser = (req, res) => {
 export {
     registerUsers,
     loginUser,
-    profileUser,
+    getProfileUser,
 
 
 }
