@@ -73,10 +73,39 @@ const getProfileUser = (req, res) => {
 
 
 
+const updateBudget = async (req, res) => {
+
+    const { budget } = req.body
+
+    const user = await Users.findById(req.params.id)
+
+    if(!user){
+
+        return errors(res, 400, "error")
+    }
+
+    try {
+
+        user.budget = budget
+        const updateBudgetUser = await user.save()
+
+        res.json(updateBudgetUser)
+        
+    } catch (error) {
+
+        console.log(error)
+        
+    }
+}
+
+
+
+
 export {
     registerUsers,
     loginUser,
     getProfileUser,
+    updateBudget
 
 
 }
