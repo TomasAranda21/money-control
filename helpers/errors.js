@@ -1,8 +1,8 @@
-const errors = (res, msg) => {
+const errors = (res, err, msg) => {
 
     const error = new Error(msg)
 
-    return res.status(400).json({msg: error.message})
+    return res.status(err).json({msg: error.message})
 
 }
 
