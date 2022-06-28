@@ -48,10 +48,104 @@ const getOperations = async (req, res) => {
 
 
 
+const getOneOperation = async (req, res) => {
+
+    const {id} = req.params
+
+    try {
+        
+        const operation = await Operations.findById(id)
+
+        res.json(operation)
+
+
+    } catch (error) {
+
+        return errors(res, 403, 'Not found')
+
+    }
+
+
+}
+
+
+const updateOperation = async (req, res) => {
+
+    const {id} = req.params
+
+    const {concept, category, amount, date} = req.body
+    
+    try {
+        
+        const operation = await Operations.findById(id)
+        
+        operation.amount = amount || operation.amount
+        operation.date = date || operation.date
+        operation.concept = concept || operation.concept
+        operation.category = category || operation.category
+
+
+        try {
+            
+            const updatedOperation = await operation.save()
+
+            res.json(updatedOperation)
+                
+            
+        } catch (error) {
+
+            console.log(error)
+            
+        }
+    
+        
+    } catch (error) {
+        
+        return errors(res, 403, 'Not found')
+
+    }
+}
+
+
+const deleteOperation = async (req, res) => {
+
+    const {id} = req.params
+
+    
+    try {
+
+        const operation = await Operations.findById(id)
+        
+
+        try {
+            
+            await operation.deleteOne()
+    
+            res.json({msg: 'Deleted operation'})
+    
+        } catch (error) {
+            
+            console.log(error)
+
+        }
+        
+    } catch (error) {
+    
+        return errors(res, 403, 'Not found')
+
+    }
+}
+
+
+
+
 export { 
     
     addOperations,
     getOperations,
+    getOneOperation, 
+    updateOperation, 
+    deleteOperation 
  
 
 }
