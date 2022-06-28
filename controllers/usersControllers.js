@@ -63,11 +63,20 @@ const loginUser = async(req, res) => {
 
 
 
+const profileUser = (req, res) => {
+
+    const { usersBudget } = req
+
+    res.json(usersBudget)
+}
+
+
 
 
 export {
     registerUsers,
-    loginUser
+    loginUser,
+    profileUser,
 
 
 }
