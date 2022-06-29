@@ -55,7 +55,7 @@ const loginUser = async(req, res) => {
 
     else{
 
-        return errors(res, 403, "the password or username is incorrect")
+        return errors(res, 403, "the password or email is incorrect")
 
     }
 
