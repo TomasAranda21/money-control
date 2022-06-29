@@ -33,7 +33,7 @@ const usersSchema = mongoose.Schema({
     img: {
         type: String,
         required: false,
-
+        default: 'img'
     }
 
 },
