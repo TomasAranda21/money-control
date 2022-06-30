@@ -84,9 +84,11 @@ const updateBudget = async (req, res) => {
         return errors(res, 400, "error")
     }
 
+    const budgetString = budget.toString()
+
     try {
 
-        user.budget = budget
+        user.budget = budgetString
         const updateBudgetUser = await user.save()
 
         res.json(updateBudgetUser)
