@@ -53,7 +53,7 @@ const getOperations = async (req, res) => {
 
     }
 
-    const operationsFilter = operations.filter(oper => oper.user.toString() === req.usersBudget._id.toString())
+    const operationsFilter = operations.filter(oper => oper?.user?.toString() === req.usersBudget?._id.toString())
 
     res.json(operationsFilter)
 }
