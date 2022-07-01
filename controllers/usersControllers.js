@@ -21,7 +21,7 @@ const registerUsers = async ( req, res) => {
 
         const userSave = await users.save()
 
-        return userSave
+        return res.status(200).json({msg: "user"})
         
 
     } catch (error) {
