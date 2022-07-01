@@ -129,28 +129,15 @@ const updateOperation = async (req, res) => {
 }
 
 
-const deleteOperation = async (req, res) => {
+
+const changeBudgetWhenDeleted = async (req, res) => {
 
     const {id} = req.params
     const { _id } = req.body
 
-    
     try {
 
         const operation = await Operations.findById(id)
-
-        try {
-            
-            await operation.deleteOne()
-    
-            res.json({msg: 'Deleted operation'})
-    
-        } catch (error) {
-            
-            console.log(error)
-
-        }
-
 
         const user = await Users.findById(_id)
 
@@ -172,13 +159,48 @@ const deleteOperation = async (req, res) => {
 
 
 
+
+const deleteOperation = async (req, res) => {
+
+    const {id} = req.params
+
+    try {
+
+        const operation = await Operations.findById(id)
+
+        try {
+            
+            await operation.deleteOne()
+    
+            res.json({msg: 'Deleted operation'})
+    
+        } catch (error) {
+            
+            console.log(error)
+
+        }
+
+    } catch (error) {
+    
+        return errors(res, 403, 'Not found')
+
+    }
+}
+
+
+
+
+
+
+
 export { 
     
     addOperations,
     getOperations,
     getOneOperation, 
     updateOperation, 
-    deleteOperation 
+    changeBudgetWhenDeleted,
+    deleteOperation
  
 
 }
