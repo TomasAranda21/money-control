@@ -6,11 +6,11 @@ import { updateBudget, updateBudgetWhenDelete } from "../helpers/updateBudget.js
 
 const addOperations = async (req, res) => {
 
-    const { amount, concept, category, type, data, id } = req.body
+    const { amount, concept, category, type, date, id } = req.body
 
     const amountString = amount.toString()
 
-    const objOper = {amount: amountString ,concept, category, type, data}
+    const objOper = {amount: amountString ,concept, category, type, date}
 
     const operations = new Operations(objOper)
 
