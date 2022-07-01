@@ -1,10 +1,12 @@
 import Operations from "../models/operationsModel.js"
 import errors from "../helpers/errors.js"
+import Users from "../models/usersModel.js"
+import { updateBudget, updateBudgetWhenDelete } from "../helpers/updateBudget.js"
 
 
 const addOperations = async (req, res) => {
 
-    const { amount, concept, category, type, data } = req.body
+    const { amount, concept, category, type, data, id } = req.body
 
     const amountString = amount.toString()
 
@@ -27,6 +29,16 @@ const addOperations = async (req, res) => {
         
         console.log(error)
     }
+
+    const user = await Users.findById(id)
+
+    if(!user){
+
+        return errors(res, 400, "error")
+    }
+
+    await updateBudget(operations, user , amount)
+
 
 }
 
@@ -73,7 +85,7 @@ const updateOperation = async (req, res) => {
 
     const {id} = req.params
 
-    const {concept, category, amount, date} = req.body
+    const {concept, category, amount, date, _id} = req.body
     
     try {
         
@@ -97,6 +109,16 @@ const updateOperation = async (req, res) => {
             console.log(error)
             
         }
+
+        const user = await Users.findById(_id)
+
+        if(!user){
+    
+            return errors(res, 400, "error")
+        }
+    
+        await updateBudget(operation, user , amount)
+
     
         
     } catch (error) {
@@ -110,12 +132,12 @@ const updateOperation = async (req, res) => {
 const deleteOperation = async (req, res) => {
 
     const {id} = req.params
+    const { _id } = req.body
 
     
     try {
 
         const operation = await Operations.findById(id)
-        
 
         try {
             
@@ -128,6 +150,17 @@ const deleteOperation = async (req, res) => {
             console.log(error)
 
         }
+
+
+        const user = await Users.findById(_id)
+
+        if(!user){
+    
+            return errors(res, 400, "error")
+        }
+    
+        await updateBudgetWhenDelete(operation, user , operation.amount)
+
         
     } catch (error) {
     
