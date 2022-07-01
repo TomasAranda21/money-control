@@ -13,7 +13,7 @@ router.route('/')
 router.route('/:id')
 .get(checkAuth, getOneOperation) 
 .put(checkAuth, updateOperation) 
-.delete(checkAuth, deleteOperation) 
+.post(checkAuth, deleteOperation) 
 
 
 
