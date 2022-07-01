@@ -90,35 +90,59 @@ const updateOperation = async (req, res) => {
     try {
         
         const operation = await Operations.findById(id)
-        
-        operation.amount = amount || operation.amount
-        operation.date = date || operation.date
-        operation.concept = concept || operation.concept
-        operation.category = category || operation.category
 
-
-        try {
+        if(operation.amount !== amount) {
             
-            const updatedOperation = await operation.save()
+            operation.amount = amount || operation.amount
 
-            res.json(updatedOperation)
+            operation.date = date || operation.date
+            operation.concept = concept || operation.concept
+            operation.category = category || operation.category
+    
+    
+            try {
                 
-            
-        } catch (error) {
-
-            console.log(error)
-            
-        }
-
-        const user = await Users.findById(_id)
-
-        if(!user){
+                const updatedOperation = await operation.save()
     
-            return errors(res, 400, "error")
-        }
+                res.json(updatedOperation)
+                    
+                
+            } catch (error) {
     
-        await updateBudget(operation, user , amount)
+                console.log(error)
+                
+            }
+            
+            // Esto se deberia de hacer solo si el monto es diferente al que ya tiene
+            const user = await Users.findById(_id)
+    
+            if(!user){
+        
+                return errors(res, 400, "error")
+            }
+        
+            await updateBudget(operation, user , amount)
 
+        }else{
+            
+            operation.date = date || operation.date
+            operation.concept = concept || operation.concept
+            operation.category = category || operation.category
+    
+    
+            try {
+                
+                const updatedOperation = await operation.save()
+    
+                res.json(updatedOperation)
+                    
+                
+            } catch (error) {
+    
+                console.log(error)
+                
+            }
+        }
     
         
     } catch (error) {
