@@ -1,6 +1,8 @@
 import Users from "../models/usersModel.js"
 import errors from "../helpers/errors.js"
 import createJWT from "../helpers/createJWT.js"
+import createToken from "../helpers/createToken.js"
+import emailForgotPass from "../helpers/emailForgotPass.js"
 
 
 const registerUsers = async ( req, res) => {
@@ -102,12 +104,93 @@ const updateBudget = async (req, res) => {
 
 
 
+// recover password
+const forgotPassword = async (req, res) => {
+
+    const { email } = req.body
+
+    const userExists = await Users.findOne({email: email})
+
+    if(!userExists){
+        const error = new Error("The email has not been registered")
+
+        return res.status(403).json({msg: error.message})
+    }
+
+    try {
+
+        userExists.token = createToken()
+
+        console.log(userExists.token)
+
+        await userExists.save() 
+
+        emailForgotPass({
+            email,
+            name: userExists.name,
+            token: userExists.token
+      
+        })
+
+        res.json({msg: "We have sent an email with the instructions"})
+
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+const checkToken = async (req, res) => {
+
+    const { token } = req.params
+
+    const check_token = await Users.findOne({token})
+
+    if (!check_token){
+        const error = new Error ('invalid token')
+        return res.status(400).json({msg: error.message})
+
+    }else{
+
+        res.json({msg: "Valid token user exists"})
+    }
+
+}
+
+const newPassword = async (req, res) => {
+
+  const { token } = req.params 
+    const { password } = req.body 
+
+    const userExists = await Users.findOne({token})
+
+    if(!userExists){
+        const error = new Error ('There was a mistake')
+        return res.status(400).json({msg: error.message})
+    }
+
+    try {
+        userExists.token = null
+        userExists.password = password
+        await userExists.save()
+
+        res.json({msg: 'Your password has been reset successfully'})
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
 
 export {
     registerUsers,
     loginUser,
     getProfileUser,
-    updateBudget
+    updateBudget,
+    forgotPassword, 
+    checkToken, 
+    newPassword
 
 
 }
