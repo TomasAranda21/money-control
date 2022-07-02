@@ -2,8 +2,6 @@ import nodemailer from 'nodemailer';
 
 const emailForgotPass= async (data) => {
     
-    // Esto son las credenciales para enviar el email
-
     const transporter = nodemailer.createTransport({
         host: process.env.EMAIL_HOST,
         port: process.env.EMAIL_PORT,
@@ -13,8 +11,6 @@ const emailForgotPass= async (data) => {
         }
     });
 
-
-    // Contenido del email
    const { email, name, token } = data;
 
    const info = await transporter.sendMail({
@@ -33,10 +29,8 @@ const emailForgotPass= async (data) => {
     
     `,
 
-
-
    });
-
-   console.log("Mensaje enviado", info.messageId)
 }
+
+
 export default emailForgotPass
