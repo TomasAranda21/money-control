@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUsers, loginUser, getProfileUser, updateBudget, forgotPassword, checkToken, newPassword } from '../controllers/usersControllers.js';
+import { registerUsers, loginUser, getProfileUser, updateBudget, forgotPassword, checkToken, newPassword, confirmAccount,reqToConfirmAccount } from '../controllers/usersControllers.js';
 import checkAuth from '../middleware/authMiddleware.js'
 
 
@@ -22,6 +22,13 @@ router.route('/forgot-password/:token')
 router.get('/profile', checkAuth, getProfileUser)
 
 router.put('/update-budget/:id', checkAuth , updateBudget)
+
+
+
+// Request to confirm account
+router.post('/confirm-account/:id', checkAuth, reqToConfirmAccount)
+router.get('/confirm-account/:token', confirmAccount)
+
 
 
 

@@ -3,6 +3,7 @@ import errors from "../helpers/errors.js"
 import createJWT from "../helpers/createJWT.js"
 import createToken from "../helpers/createToken.js"
 import emailForgotPass from "../helpers/emailForgotPass.js"
+import emailCheckAccount from "../helpers/emailCheckAccount.js"
 
 
 const registerUsers = async ( req, res) => {
@@ -53,7 +54,10 @@ const loginUser = async(req, res) => {
             email: user.email,
             token: createJWT(user._id)
         })
+
     }
+
+    // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYzBhNzUxMmRlNTRlODA4MDhmODYzMiIsImlhdCI6MTY1Njc5MzAyMywiZXhwIjoxNjU5Mzg1MDIzfQ.Mld5LBTgni9yQJoaKDDA7H1wMiMb6HbvHGvyMARRnc4
 
     else{
 
@@ -71,6 +75,74 @@ const getProfileUser = (req, res) => {
 
     res.json(usersBudget)
 }
+
+
+
+const reqToConfirmAccount = async(req, res) => {
+
+    const user = await Users.findById(req.params.id)
+
+
+    if(!user){
+
+        return errors(res, 400, "error")
+    }
+
+    try {
+
+        emailCheckAccount({
+            email: user.email,
+            name: user.name,
+            token: user.token
+        })
+
+        res.json({msg: 'verify your email, we have sent you an email to verify your account'})
+
+        
+    } catch (error) {
+
+        console.log(error)
+        
+    }
+
+
+}
+
+
+
+const confirmAccount = async (req, res) => {
+
+    const { token } = req.params 
+
+
+    const checkUser = await Users.findOne({ token })
+
+    if (!checkUser){
+
+        return errors(res, 400, "invalid Token")
+
+    }
+    
+    try {
+
+        checkUser.confirmed = true;
+        checkUser.token = null;
+
+        await checkUser.save() 
+        
+
+        res.json({msg: 'User Confirmed Successfully'})
+
+    } catch (error) {
+
+        console.log(error)
+
+    }
+
+}
+
+
+
 
 
 
@@ -112,9 +184,9 @@ const forgotPassword = async (req, res) => {
     const userExists = await Users.findOne({email: email})
 
     if(!userExists){
-        const error = new Error("The email has not been registered")
 
-        return res.status(403).json({msg: error.message})
+        return errors(res, 403, "The email has not been registered")
+
     }
 
     try {
@@ -147,8 +219,9 @@ const checkToken = async (req, res) => {
     const check_token = await Users.findOne({token})
 
     if (!check_token){
-        const error = new Error ('invalid token')
-        return res.status(400).json({msg: error.message})
+
+        return errors(res, 400, "invalid Token")
+
 
     }else{
 
@@ -165,8 +238,8 @@ const newPassword = async (req, res) => {
     const userExists = await Users.findOne({token})
 
     if(!userExists){
-        const error = new Error ('There was a mistake')
-        return res.status(400).json({msg: error.message})
+
+        return errors(res, 400, "There was a mistake")
     }
 
     try {
@@ -187,10 +260,12 @@ export {
     registerUsers,
     loginUser,
     getProfileUser,
+    reqToConfirmAccount,
+    confirmAccount,
     updateBudget,
     forgotPassword, 
     checkToken, 
-    newPassword
+    newPassword,
 
 
 }
