@@ -17,6 +17,18 @@ const addOperations = async (req, res) => {
 
     operations.user = req.usersBudget._id
 
+    // we verify how many operations the user has
+    const operationsUsers = await Operations.find().where('usersBudget').equals(req.usersBudget)
+    
+    const operationsFilter = operationsUsers.filter(oper => oper?.user?.toString() === req.usersBudget?._id.toString())
+
+    // We verify how many operations the user has and then we block the account until they confirm it, they will not be able to continue adding
+    if(operationsFilter.length >= 5){
+
+       return errors(res, 403, 'it is not allowed to add more operations confirm your account to continue using the app')
+
+    }
+
 
     try {
         
@@ -113,7 +125,6 @@ const updateOperation = async (req, res) => {
                 
             }
             
-            // Esto se deberia de hacer solo si el monto es diferente al que ya tiene
             const user = await Users.findById(_id)
     
             if(!user){
