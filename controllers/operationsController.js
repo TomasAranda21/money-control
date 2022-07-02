@@ -14,21 +14,49 @@ const addOperations = async (req, res) => {
 
     const operations = new Operations(objOper)
 
+    // first we find the user
+    const userOperation = await Users.findById(id)
+
+
+    // if the user has the confirmed in true then we continue scheduling otherwise we verify the number of transactions that it has
+    if(userOperation.confirmed){
+
+        operations.user = req.usersBudget._id
+
+        try {
+        
+            const oparationSave = await operations.save()
+    
+            res.json(oparationSave)
+    
+        } catch (error) {
+    
+            
+            console.log(error)
+        }
+    
+    
+        await updateBudget(operations, userOperation , amount)
+
+        return
+
+    }
+
 
     operations.user = req.usersBudget._id
 
-    // we verify how many operations the user has
+    // has first we get the operations that the user has
     const operationsUsers = await Operations.find().where('usersBudget').equals(req.usersBudget)
     
-    const operationsFilter = operationsUsers.filter(oper => oper?.user?.toString() === req.usersBudget?._id.toString())
+    const operationsFilter = operationsUsers.filter(oper => oper?.user.toString() === userOperation?._id.toString())
 
     // We verify how many operations the user has and then we block the account until they confirm it, they will not be able to continue adding
     if(operationsFilter.length >= 5){
 
+        console.log('ya no mas')
        return errors(res, 403, 'it is not allowed to add more operations confirm your account to continue using the app')
 
     }
-
 
     try {
         
@@ -42,14 +70,8 @@ const addOperations = async (req, res) => {
         console.log(error)
     }
 
-    const user = await Users.findById(id)
 
-    if(!user){
-
-        return errors(res, 400, "error")
-    }
-
-    await updateBudget(operations, user , amount)
+    await updateBudget(operations, userOperation , amount)
 
 
 }
