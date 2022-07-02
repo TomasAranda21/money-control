@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from "bcrypt";
+import createToken from '../helpers/createToken.js';
 
 
 const usersSchema = mongoose.Schema({
@@ -34,6 +35,16 @@ const usersSchema = mongoose.Schema({
         type: String,
         required: false,
         default: 'img'
+    },
+
+    token: {
+        type: String,
+        default: createToken()
+    },
+
+    confirmed: {
+        type: Boolean,
+        default: false
     }
 
 },
