@@ -26,14 +26,22 @@ Install my-project with npm
 
 To run this project, you will need to add the following environment variables to your .env file.
 
-#### These variables are for connecting to firebase.
+#### These variables are for the database for the frontend url and for the json web token.
 
 `MONGO_DB`
 `JWT_SECRET`
 `FRONTEND_URL_TOKEN`
 
 
+#### These variables are for sending emails
+
+`EMAIL_USER`
+`EMAIL_PASS`
+`EMAIL_HOST`
+`EMAIL_PORT`
+
+
 
 ## Screenshots
  
-![App Screenshot](https://res.cloudinary.com/dkxm9njd6/image/upload/v1656716847/gif_bilpis.gif)
+![App Screenshot](https://res.cloudinary.com/dkxm9njd6/image/upload/v1656879068/gift_u8ow2z.gif)
