@@ -23,7 +23,7 @@ const emailForgotPass= async (data) => {
     
     `<p>Hello! ${name}, You have requested to reset your password.</p>
     <p> Follow the link below to generate a new password: </p>
-    <a href="${process.env.FRONTEND_URL_TOKEN}/forgot-password/${token}">Restore password<a></p>
+    <a href="${process.env.FRONTEND_URL_TOKEN}/new-password/${token}">Restore password<a></p>
 
     <p> If you did not create this account you can ignore this message </p>
     
