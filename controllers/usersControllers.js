@@ -57,8 +57,6 @@ const loginUser = async(req, res) => {
 
     }
 
-    // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYyYzBhNzUxMmRlNTRlODA4MDhmODYzMiIsImlhdCI6MTY1Njc5MzAyMywiZXhwIjoxNjU5Mzg1MDIzfQ.Mld5LBTgni9yQJoaKDDA7H1wMiMb6HbvHGvyMARRnc4
-
     else{
 
         return errors(res, 403, "the password or email is incorrect")
@@ -136,12 +134,50 @@ const confirmAccount = async (req, res) => {
     } catch (error) {
 
         console.log(error)
-
     }
-
 }
 
 
+const editProfile = async (req, res) => {
+
+    const {id} = req.params
+    const {email, name} = req.body
+
+    const user = await Users.findById(id)
+
+    if(!user){
+
+        return errors(res, 400, "error")
+
+    }
+
+    if(user.email !== req.body.email){
+
+        const existsEmail = await Users.findOne({email})
+
+        if(existsEmail){
+
+            return errors(res, 400, "That email is already in use")
+
+        }
+    }
+
+    try {
+
+        user.name = name;
+        user.email = email;
+
+        const updateUser = await user.save()
+
+        res.json(updateUser)
+
+        
+    } catch (error) {
+        
+        console.log(error)
+    }
+
+}
 
 
 
@@ -227,8 +263,9 @@ const checkToken = async (req, res) => {
 
         res.json({msg: "Valid token user exists"})
     }
-
 }
+
+
 
 const newPassword = async (req, res) => {
 
@@ -260,6 +297,7 @@ export {
     registerUsers,
     loginUser,
     getProfileUser,
+    editProfile,
     reqToConfirmAccount,
     confirmAccount,
     updateBudget,
