@@ -229,8 +229,6 @@ const forgotPassword = async (req, res) => {
 
         userExists.token = createToken()
 
-        console.log(userExists.token)
-
         await userExists.save() 
 
         emailForgotPass({
